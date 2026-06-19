@@ -5,5 +5,7 @@
     <Project Path="src/WindowsAas.Mqtt/WindowsAas.Mqtt.csproj" />
     <Project Path="src/WindowsAas.PluginHost/WindowsAas.PluginHost.csproj" />
     <Project Path="src/WindowsAas.Security/WindowsAas.Security.csproj" />
+    <Project Path="src/WindowsAas.Service/WindowsAas.Service.csproj" />
+    <Project Path="src/WindowsAas.Web/WindowsAas.Web.csproj" />
   </Folder>
 </Solution>

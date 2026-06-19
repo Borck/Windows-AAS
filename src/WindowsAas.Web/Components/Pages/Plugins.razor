@@ -1,0 +1,75 @@
+@page "/plugins"
+@inject IPluginHost PluginHost
+@inject ISnackbar Snackbar
+
+<PageTitle>Windows-AAS — Plugins</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Plugins</MudText>
+
+<MudTable Items="@_plugins" Hover="true" Dense="true" Elevation="2">
+  <HeaderContent>
+    <MudTh>Name</MudTh>
+    <MudTh>Id</MudTh>
+    <MudTh>Version</MudTh>
+    <MudTh>State</MudTh>
+    <MudTh>Actions</MudTh>
+  </HeaderContent>
+  <RowTemplate>
+    <MudTd DataLabel="Name">@context.Name</MudTd>
+    <MudTd DataLabel="Id">@context.Id</MudTd>
+    <MudTd DataLabel="Version">@context.Version</MudTd>
+    <MudTd DataLabel="State">
+      <MudChip T="string" Color="@StateColor(context.State)" Size="Size.Small">@context.State</MudChip>
+    </MudTd>
+    <MudTd DataLabel="Actions">
+      @if (context.State == PluginState.Enabled)
+      {
+        <MudButton Size="Size.Small" Variant="Variant.Outlined"
+                   OnClick="@(() => DisableAsync(context.Id))">Disable</MudButton>
+      }
+      else
+      {
+        <MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary"
+                   OnClick="@(() => EnableAsync(context.Id))">Enable</MudButton>
+      }
+    </MudTd>
+  </RowTemplate>
+</MudTable>
+
+@code {
+  private IReadOnlyList<PluginInfo> _plugins = [];
+
+  protected override void OnInitialized() => Refresh();
+
+  private void Refresh() => _plugins = PluginHost.List();
+
+  private async Task EnableAsync(string id)
+  {
+    try
+    {
+      await PluginHost.EnableAsync(id);
+      Snackbar.Add($"Enabled {id}.", Severity.Success);
+    }
+    catch (Exception ex)
+    {
+      Snackbar.Add($"Failed to enable {id}: {ex.Message}", Severity.Error);
+    }
+
+    Refresh();
+  }
+
+  private async Task DisableAsync(string id)
+  {
+    await PluginHost.DisableAsync(id);
+    Snackbar.Add($"Disabled {id}.", Severity.Normal);
+    Refresh();
+  }
+
+  private static Color StateColor(PluginState state) => state switch
+  {
+    PluginState.Enabled => Color.Success,
+    PluginState.Faulted => Color.Error,
+    PluginState.Disabled => Color.Default,
+    _ => Color.Info,
+  };
+}
