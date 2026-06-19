@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+
+  <!--
+    Windows-AAS MSI. Installs the core service and registers it to start on boot
+    (LocalSystem, Automatic start) so it runs before any user logs in.
+  -->
+  <Package Name="Windows-AAS"
+           Manufacturer="Christian Borck"
+           Version="0.1.0.0"
+           UpgradeCode="7B5B0D2E-2C9A-4E3D-9C1E-3A6F2B7C1D40"
+           Scope="perMachine">
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of Windows-AAS is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="Windows-AAS" />
+    </StandardDirectory>
+
+    <Feature Id="Main" Title="Windows-AAS Service" Level="1">
+      <ComponentGroupRef Id="ServiceFiles" />
+      <ComponentRef Id="ServiceRegistration" />
+    </Feature>
+  </Package>
+
+  <Fragment>
+    <!-- All published service files. -->
+    <ComponentGroup Id="ServiceFiles" Directory="INSTALLFOLDER">
+      <Files Include="$(var.PublishDir)\**" />
+    </ComponentGroup>
+
+    <!-- The service host executable, installed + auto-started on boot. -->
+    <Component Id="ServiceRegistration" Directory="INSTALLFOLDER" Guid="*">
+      <File Id="ServiceExe" Source="$(var.PublishDir)\WindowsAas.Service.exe" KeyPath="yes" />
+
+      <ServiceInstall Id="WindowsAasService"
+                      Name="WindowsAAS"
+                      DisplayName="Windows-AAS"
+                      Description="Windows Asset Administration Shell core service."
+                      Type="ownProcess"
+                      Start="auto"
+                      Account="LocalSystem"
+                      ErrorControl="normal"
+                      Vital="yes" />
+
+      <ServiceControl Id="WindowsAasServiceControl"
+                      Name="WindowsAAS"
+                      Start="install"
+                      Stop="both"
+                      Remove="uninstall"
+                      Wait="yes" />
+    </Component>
+  </Fragment>
+
+</Wix>
