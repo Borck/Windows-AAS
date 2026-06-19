@@ -1,0 +1,42 @@
+# BaSyx AAS infrastructure for Windows-AAS.
+#
+# The Windows core service does NOT host the AAS; it connects to these containers.
+# The aas-environment hosts the AAS + submodels and emits MQTT value-change events;
+# the registries make the shell discoverable; Mosquitto is the MQTT broker the host
+# <-> AAS bridge uses. See docs/INSTALL.md for production hardening (TLS, auth).
+services:
+  aas-environment:
+    image: eclipsebasyx/aas-environment:2.0.0-milestone-05
+    container_name: waas-aas-environment
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./basyx/aas-environment.properties:/application/application.properties:ro
+    depends_on:
+      - mqtt
+    restart: unless-stopped
+
+  aas-registry:
+    image: eclipsebasyx/aas-registry-log-mem:2.0.0-milestone-05
+    container_name: waas-aas-registry
+    ports:
+      - "8082:8080"
+    restart: unless-stopped
+
+  submodel-registry:
+    image: eclipsebasyx/submodel-registry-log-mem:2.0.0-milestone-05
+    container_name: waas-submodel-registry
+    ports:
+      - "8083:8080"
+    restart: unless-stopped
+
+  mqtt:
+    image: eclipse-mosquitto:2
+    container_name: waas-mqtt
+    ports:
+      - "1883:1883" # plain MQTT (dev only)
+      - "8883:8883" # MQTT over TLS (production)
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./mosquitto/certs:/mosquitto/certs:ro
+    restart: unless-stopped
