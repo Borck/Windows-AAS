@@ -29,11 +29,15 @@ public sealed class PluginHost(
   private readonly ConcurrentDictionary<string, LoadedPlugin> _plugins = new(StringComparer.OrdinalIgnoreCase);
   private readonly ConcurrentDictionary<string, string> _submodelToPlugin = new(StringComparer.Ordinal);
 
-  public async Task InitializeAsync(CancellationToken ct = default)
+  public Task InitializeAsync(CancellationToken ct = default)
   {
     Directory.CreateDirectory(_options.PluginsDirectory);
     Directory.CreateDirectory(_options.DataDirectory);
+    return RescanAsync(ct);
+  }
 
+  public async Task RescanAsync(CancellationToken ct = default)
+  {
     foreach (var dir in Directory.EnumerateDirectories(_options.PluginsDirectory))
     {
       var manifestPath = Path.Combine(dir, ManifestFileName);
@@ -45,6 +49,11 @@ public sealed class PluginHost(
       try
       {
         var manifest = await ReadManifestAsync(manifestPath, ct);
+        if (_plugins.ContainsKey(manifest.Id))
+        {
+          continue; // Already tracked.
+        }
+
         var loaded = new LoadedPlugin { Manifest = manifest, Directory = dir };
         _plugins[manifest.Id] = loaded;
 

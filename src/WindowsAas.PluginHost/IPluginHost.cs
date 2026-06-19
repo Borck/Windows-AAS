@@ -13,6 +13,12 @@ public interface IPluginHost
   /// <summary>Discovers installed plugins and enables those marked enabled.</summary>
   Task InitializeAsync(CancellationToken ct = default);
 
+  /// <summary>
+  /// Discovers plugins added since the last scan (e.g. just installed from the
+  /// repository) and enables them, leaving already-tracked plugins untouched.
+  /// </summary>
+  Task RescanAsync(CancellationToken ct = default);
+
   /// <summary>Lists all installed plugins and their current state.</summary>
   IReadOnlyList<PluginInfo> List();
 

@@ -16,6 +16,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WindowsAas.PluginHost\WindowsAas.PluginHost.csproj" />
+    <ProjectReference Include="..\WindowsAas.Repository.Client\WindowsAas.Repository.Client.csproj" />
+    <ProjectReference Include="..\WindowsAas.Updater\WindowsAas.Updater.csproj" />
   </ItemGroup>
 
 </Project>

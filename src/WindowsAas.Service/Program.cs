@@ -4,10 +4,12 @@ using Serilog;
 using WindowsAas.Aas;
 using WindowsAas.Mqtt;
 using WindowsAas.PluginHost;
+using WindowsAas.Repository.Client;
 using WindowsAas.Security;
 using WindowsAas.Service;
 using WindowsAas.Service.Bridge;
 using WindowsAas.Service.Logging;
+using WindowsAas.Updater;
 using WindowsAas.Web;
 using WindowsAas.Web.Components;
 using WindowsAas.Web.Logging;
@@ -40,6 +42,10 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
 builder.Services.Configure<AasOptions>(builder.Configuration.GetSection(AasOptions.SectionName));
 builder.Services.Configure<MqttOptions>(builder.Configuration.GetSection(MqttOptions.SectionName));
 builder.Services.Configure<PluginHostOptions>(builder.Configuration.GetSection(PluginHostOptions.SectionName));
+builder.Services.Configure<RepositoryOptions>(builder.Configuration.GetSection(RepositoryOptions.SectionName));
+builder.Services.Configure<UpdaterOptions>(builder.Configuration.GetSection(UpdaterOptions.SectionName));
+builder.Services.PostConfigure<UpdaterOptions>(o =>
+  o.CurrentVersion = typeof(Program).Assembly.GetName().Version?.ToString(3) ?? o.CurrentVersion);
 
 // Secret protection: DPAPI on Windows, throwing stub elsewhere (dev builds).
 RegisterSecretProtector(builder.Services);
@@ -58,6 +64,23 @@ builder.Services.AddSingleton(sp =>
 // Plugin host + the value reporter that bridges plugin output to MQTT/AAS.
 builder.Services.AddSingleton<IPluginHost, PluginHost>();
 builder.Services.AddSingleton<IPluginValueReporter, ValueReporter>();
+
+// Online plugin repository: signature verifier built from trusted publisher keys.
+builder.Services.AddSingleton<IPackageVerifier>(sp =>
+{
+  var keys = sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<RepositoryOptions>>()
+    .Value.TrustedPublisherKeys;
+  return new RsaPackageVerifier(keys);
+});
+builder.Services.AddHttpClient<IPluginRepositoryClient, HttpPluginRepositoryClient>();
+
+// Self-update: feed checker, verification, installer and background poller.
+builder.Services.AddSingleton<UpdateState>();
+builder.Services.AddHttpClient<IUpdateChecker, GitHubUpdateChecker>();
+builder.Services.AddHttpClient<UpdateOrchestrator>();
+builder.Services.AddSingleton<IAuthenticodeValidator, WindowsAuthenticodeValidator>();
+builder.Services.AddSingleton<IUpdateInstaller, MsiUpdateInstaller>();
+builder.Services.AddHostedService<UpdateBackgroundService>();
 
 // Bridge orchestration runs as a background service.
 builder.Services.AddHostedService<BridgeOrchestrator>();
