@@ -1,0 +1,49 @@
+<Project>
+
+  <!-- Central Package Management: single source of truth for NuGet versions. -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Hosting / service -->
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.WindowsServices" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.0" />
+
+    <!-- Logging -->
+    <PackageVersion Include="Serilog.AspNetCore" Version="8.0.3" />
+    <PackageVersion Include="Serilog.Sinks.File" Version="6.0.0" />
+
+    <!-- MQTT -->
+    <PackageVersion Include="MQTTnet" Version="4.3.7.1207" />
+
+    <!--
+      AAS integration: the BaSyx aas-environment + registries are the server side
+      (Docker). Our core service is a *client* that speaks the AAS v3 REST + MQTT
+      protocols directly via HttpClient + System.Text.Json (see WindowsAas.Aas),
+      so no server-side BaSyx NuGet dependency is required here.
+    -->
+
+    <!-- Web UI -->
+    <PackageVersion Include="MudBlazor" Version="8.0.0" />
+
+    <!-- Windows interop (AV plugin) -->
+    <PackageVersion Include="Microsoft.Windows.CsWin32" Version="0.3.106" />
+    <PackageVersion Include="NAudio" Version="2.2.1" />
+
+    <!-- Serialization / misc -->
+    <PackageVersion Include="System.Text.Json" Version="10.0.0" />
+
+    <!-- Testing -->
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageVersion Include="xunit" Version="2.9.2" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageVersion Include="NSubstitute" Version="5.3.0" />
+    <PackageVersion Include="Shouldly" Version="4.2.1" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/WindowsAas.Aas/WindowsAas.Aas.csproj" />
+    <Project Path="src/WindowsAas.Abstractions/WindowsAas.Abstractions.csproj" />
+  </Folder>
+</Solution>
