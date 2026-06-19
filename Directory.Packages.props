@@ -35,6 +35,9 @@
     <PackageVersion Include="Microsoft.Windows.CsWin32" Version="0.3.106" />
     <PackageVersion Include="NAudio" Version="2.2.1" />
 
+    <!-- Security -->
+    <PackageVersion Include="System.Security.Cryptography.ProtectedData" Version="10.0.0" />
+
     <!-- Serialization / misc -->
     <PackageVersion Include="System.Text.Json" Version="10.0.0" />
 
