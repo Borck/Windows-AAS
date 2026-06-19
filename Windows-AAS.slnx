@@ -9,6 +9,7 @@
     <Project Path="src/WindowsAas.Web/WindowsAas.Web.csproj" />
   </Folder>
   <Folder Name="/src/Plugins/">
+    <Project Path="src/Plugins/WindowsAas.Plugins.Automation/WindowsAas.Plugins.Automation.csproj" />
     <Project Path="src/Plugins/WindowsAas.Plugins.Av/WindowsAas.Plugins.Av.csproj" />
   </Folder>
 </Solution>

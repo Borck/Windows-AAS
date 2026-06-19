@@ -1,0 +1,10 @@
+{
+  "id": "windows-aas.automation",
+  "name": "Automation Plugin",
+  "version": "0.1.0",
+  "description": "Attach scripts and applications and execute them from the AAS via triggers.",
+  "author": "Windows-AAS",
+  "entryAssembly": "WindowsAas.Plugins.Automation.dll",
+  "entryType": "WindowsAas.Plugins.Automation.AutomationPlugin",
+  "minHostVersion": "0.1.0"
+}
