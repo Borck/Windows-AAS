@@ -3,6 +3,7 @@
     <Project Path="src/WindowsAas.Aas/WindowsAas.Aas.csproj" />
     <Project Path="src/WindowsAas.Abstractions/WindowsAas.Abstractions.csproj" />
     <Project Path="src/WindowsAas.Mqtt/WindowsAas.Mqtt.csproj" />
+    <Project Path="src/WindowsAas.PluginHost/WindowsAas.PluginHost.csproj" />
     <Project Path="src/WindowsAas.Security/WindowsAas.Security.csproj" />
   </Folder>
 </Solution>
