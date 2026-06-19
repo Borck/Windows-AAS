@@ -15,4 +15,7 @@
     <Project Path="src/Plugins/WindowsAas.Plugins.Automation/WindowsAas.Plugins.Automation.csproj" />
     <Project Path="src/Plugins/WindowsAas.Plugins.Av/WindowsAas.Plugins.Av.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/WindowsAas.Tests/WindowsAas.Tests.csproj" />
+  </Folder>
 </Solution>

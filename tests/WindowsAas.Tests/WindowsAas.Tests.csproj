@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>WindowsAas.Tests</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <!-- Test assertions intentionally avoid XML docs. -->
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="Shouldly" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\WindowsAas.Aas\WindowsAas.Aas.csproj" />
+    <ProjectReference Include="..\..\src\WindowsAas.Mqtt\WindowsAas.Mqtt.csproj" />
+    <ProjectReference Include="..\..\src\WindowsAas.Security\WindowsAas.Security.csproj" />
+    <ProjectReference Include="..\..\src\Plugins\WindowsAas.Plugins.Automation\WindowsAas.Plugins.Automation.csproj" />
+  </ItemGroup>
+
+</Project>
