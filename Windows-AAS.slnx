@@ -4,8 +4,11 @@
     <Project Path="src/WindowsAas.Abstractions/WindowsAas.Abstractions.csproj" />
     <Project Path="src/WindowsAas.Mqtt/WindowsAas.Mqtt.csproj" />
     <Project Path="src/WindowsAas.PluginHost/WindowsAas.PluginHost.csproj" />
+    <Project Path="src/WindowsAas.Repository.Client/WindowsAas.Repository.Client.csproj" />
+    <Project Path="src/WindowsAas.Repository.Server/WindowsAas.Repository.Server.csproj" />
     <Project Path="src/WindowsAas.Security/WindowsAas.Security.csproj" />
     <Project Path="src/WindowsAas.Service/WindowsAas.Service.csproj" />
+    <Project Path="src/WindowsAas.Updater/WindowsAas.Updater.csproj" />
     <Project Path="src/WindowsAas.Web/WindowsAas.Web.csproj" />
   </Folder>
   <Folder Name="/src/Plugins/">
