@@ -1,0 +1,84 @@
+@page "/repository"
+@inject IPluginRepositoryClient RepositoryClient
+@inject IPluginHost PluginHost
+@inject IOptions<PluginHostOptions> PluginOptions
+@inject ISnackbar Snackbar
+
+<PageTitle>Windows-AAS — Repository</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Plugin repository</MudText>
+
+<MudButton StartIcon="@Icons.Material.Filled.Refresh" Variant="Variant.Outlined"
+           OnClick="LoadAsync" Class="mb-4">Refresh catalogue</MudButton>
+
+@if (_loading)
+{
+  <MudProgressLinear Indeterminate="true" Class="my-2" />
+}
+else if (_error is not null)
+{
+  <MudAlert Severity="Severity.Error">@_error</MudAlert>
+}
+else
+{
+  <MudTable Items="@_entries" Hover="true" Dense="true" Elevation="2">
+    <HeaderContent>
+      <MudTh>Name</MudTh>
+      <MudTh>Version</MudTh>
+      <MudTh>Author</MudTh>
+      <MudTh>Description</MudTh>
+      <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+      <MudTd DataLabel="Name">@context.Name</MudTd>
+      <MudTd DataLabel="Version">@context.Version</MudTd>
+      <MudTd DataLabel="Author">@context.Author</MudTd>
+      <MudTd DataLabel="Description">@context.Description</MudTd>
+      <MudTd>
+        <MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary"
+                   OnClick="@(() => InstallAsync(context))">Install</MudButton>
+      </MudTd>
+    </RowTemplate>
+  </MudTable>
+}
+
+@code {
+  private IReadOnlyList<RepositoryEntry> _entries = [];
+  private bool _loading;
+  private string? _error;
+
+  protected override async Task OnInitializedAsync() => await LoadAsync();
+
+  private async Task LoadAsync()
+  {
+    _loading = true;
+    _error = null;
+    try
+    {
+      var index = await RepositoryClient.GetIndexAsync();
+      _entries = index.Plugins;
+    }
+    catch (Exception ex)
+    {
+      _error = $"Could not load the repository catalogue: {ex.Message}";
+    }
+    finally
+    {
+      _loading = false;
+    }
+  }
+
+  private async Task InstallAsync(RepositoryEntry entry)
+  {
+    try
+    {
+      await RepositoryClient.InstallAsync(entry, PluginOptions.Value.PluginsDirectory);
+      await PluginHost.RescanAsync();
+      Snackbar.Add($"Installed {entry.Name} {entry.Version}.", Severity.Success);
+    }
+    catch (Exception ex)
+    {
+      Snackbar.Add($"Install failed: {ex.Message}", Severity.Error);
+    }
+  }
+}

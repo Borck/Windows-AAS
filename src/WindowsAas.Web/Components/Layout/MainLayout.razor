@@ -1,0 +1,28 @@
+@inherits LayoutComponentBase
+
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+  <MudAppBar Elevation="1">
+    <MudText Typo="Typo.h6">Windows-AAS</MudText>
+    <MudSpacer />
+    <MudText Typo="Typo.body2">Admin (127.0.0.1)</MudText>
+  </MudAppBar>
+  <MudDrawer Open="true" Elevation="1" Variant="@DrawerVariant.Persistent">
+    <MudNavMenu>
+      <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">Overview</MudNavLink>
+      <MudNavLink Href="plugins" Icon="@Icons.Material.Filled.Extension">Plugins</MudNavLink>
+      <MudNavLink Href="repository" Icon="@Icons.Material.Filled.CloudDownload">Repository</MudNavLink>
+      <MudNavLink Href="logs" Icon="@Icons.Material.Filled.Article">Logs</MudNavLink>
+      <MudNavLink Href="updates" Icon="@Icons.Material.Filled.SystemUpdate">Updates</MudNavLink>
+    </MudNavMenu>
+  </MudDrawer>
+  <MudMainContent>
+    <MudContainer MaxWidth="MaxWidth.Large" Class="my-6">
+      @Body
+    </MudContainer>
+  </MudMainContent>
+</MudLayout>

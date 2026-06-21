@@ -1,0 +1,87 @@
+@page "/updates"
+@implements IDisposable
+@inject UpdateState UpdateState
+@inject IUpdateChecker Checker
+@inject UpdateOrchestrator Orchestrator
+@inject ISnackbar Snackbar
+
+<PageTitle>Windows-AAS — Updates</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Updates</MudText>
+
+<MudPaper Class="pa-4" Elevation="2">
+  @if (UpdateState.Available is { } update)
+  {
+    <MudAlert Severity="Severity.Info" Class="mb-4">
+      Version <b>@update.Version</b> is available.
+    </MudAlert>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.SystemUpdate"
+               Disabled="_busy" OnClick="@(() => ApplyAsync(update))">
+      Install update
+    </MudButton>
+  }
+  else
+  {
+    <MudText>The service is up to date.</MudText>
+  }
+
+  <MudDivider Class="my-4" />
+  <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Refresh"
+             Disabled="_busy" OnClick="CheckAsync">Check now</MudButton>
+
+  @if (UpdateState.LastCheckedUtc is { } checkedUtc)
+  {
+    <MudText Typo="Typo.caption" Class="mt-2">
+      Last checked: @checkedUtc.ToLocalTime().ToString("g")
+    </MudText>
+  }
+</MudPaper>
+
+@code {
+  private bool _busy;
+
+  protected override void OnInitialized() => UpdateState.Changed += OnChanged;
+
+  private void OnChanged() => InvokeAsync(StateHasChanged);
+
+  private async Task CheckAsync()
+  {
+    _busy = true;
+    try
+    {
+      UpdateState.Available = await Checker.GetAvailableUpdateAsync();
+      UpdateState.LastCheckedUtc = DateTimeOffset.UtcNow;
+      Snackbar.Add(UpdateState.Available is null ? "Up to date." : "Update found.", Severity.Normal);
+    }
+    catch (Exception ex)
+    {
+      Snackbar.Add($"Update check failed: {ex.Message}", Severity.Error);
+    }
+    finally
+    {
+      _busy = false;
+    }
+  }
+
+  private async Task ApplyAsync(UpdateInfo update)
+  {
+    _busy = true;
+    try
+    {
+      var launched = await Orchestrator.ApplyAsync(update);
+      Snackbar.Add(launched ? "Update launched; the service will restart." : "Update rejected.",
+        launched ? Severity.Success : Severity.Error);
+    }
+    catch (Exception ex)
+    {
+      Snackbar.Add($"Update failed: {ex.Message}", Severity.Error);
+    }
+    finally
+    {
+      _busy = false;
+    }
+  }
+
+  public void Dispose() => UpdateState.Changed -= OnChanged;
+}

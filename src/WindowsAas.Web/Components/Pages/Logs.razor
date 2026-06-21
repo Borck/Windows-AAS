@@ -1,0 +1,52 @@
+@page "/logs"
+@implements IDisposable
+@inject LogStore LogStore
+
+<PageTitle>Windows-AAS — Logs</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Logs</MudText>
+
+<MudTable Items="@_entries" Dense="true" Hover="true" FixedHeader="true" Height="70vh" Elevation="2">
+  <HeaderContent>
+    <MudTh>Time</MudTh>
+    <MudTh>Level</MudTh>
+    <MudTh>Source</MudTh>
+    <MudTh>Message</MudTh>
+  </HeaderContent>
+  <RowTemplate>
+    <MudTd DataLabel="Time">@context.Timestamp.ToLocalTime().ToString("HH:mm:ss")</MudTd>
+    <MudTd DataLabel="Level">
+      <MudChip T="string" Size="Size.Small" Color="@LevelColor(context.Level)">@context.Level</MudChip>
+    </MudTd>
+    <MudTd DataLabel="Source">@context.Source</MudTd>
+    <MudTd DataLabel="Message">@context.Message</MudTd>
+  </RowTemplate>
+</MudTable>
+
+@code {
+  private IReadOnlyList<LogEntry> _entries = [];
+
+  protected override void OnInitialized()
+  {
+    LogStore.Changed += OnChanged;
+    Reload();
+  }
+
+  private void OnChanged() => InvokeAsync(() =>
+  {
+    Reload();
+    StateHasChanged();
+  });
+
+  // Newest first for readability.
+  private void Reload() => _entries = LogStore.Snapshot().Reverse().ToList();
+
+  private static Color LevelColor(string level) => level switch
+  {
+    "Error" or "Fatal" => Color.Error,
+    "Warning" => Color.Warning,
+    _ => Color.Default,
+  };
+
+  public void Dispose() => LogStore.Changed -= OnChanged;
+}

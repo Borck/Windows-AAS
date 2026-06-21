@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>WindowsAas.Web</RootNamespace>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MudBlazor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WindowsAas.PluginHost\WindowsAas.PluginHost.csproj" />
+    <ProjectReference Include="..\WindowsAas.Repository.Client\WindowsAas.Repository.Client.csproj" />
+    <ProjectReference Include="..\WindowsAas.Updater\WindowsAas.Updater.csproj" />
+  </ItemGroup>
+
+</Project>

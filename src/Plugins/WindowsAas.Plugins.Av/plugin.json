@@ -1,0 +1,10 @@
+{
+  "id": "windows-aas.av",
+  "name": "AV Plugin",
+  "version": "0.1.0",
+  "description": "Read/write access to monitor settings and audio input/output devices.",
+  "author": "Windows-AAS",
+  "entryAssembly": "WindowsAas.Plugins.Av.dll",
+  "entryType": "WindowsAas.Plugins.Av.AvPlugin",
+  "minHostVersion": "0.1.0"
+}

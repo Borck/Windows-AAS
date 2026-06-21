@@ -1,0 +1,44 @@
+@page "/"
+@inject IPluginHost PluginHost
+
+<PageTitle>Windows-AAS — Overview</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Overview</MudText>
+<MudText Typo="Typo.body1" Class="mb-4">
+  Windows-AAS bridges this host's properties to an Asset Administration Shell over MQTT.
+</MudText>
+
+<MudGrid>
+  <MudItem xs="12" sm="6" md="4">
+    <MudPaper Class="pa-4" Elevation="2">
+      <MudText Typo="Typo.subtitle2">Installed plugins</MudText>
+      <MudText Typo="Typo.h3">@_total</MudText>
+    </MudPaper>
+  </MudItem>
+  <MudItem xs="12" sm="6" md="4">
+    <MudPaper Class="pa-4" Elevation="2">
+      <MudText Typo="Typo.subtitle2">Enabled</MudText>
+      <MudText Typo="Typo.h3" Color="Color.Success">@_enabled</MudText>
+    </MudPaper>
+  </MudItem>
+  <MudItem xs="12" sm="6" md="4">
+    <MudPaper Class="pa-4" Elevation="2">
+      <MudText Typo="Typo.subtitle2">Faulted</MudText>
+      <MudText Typo="Typo.h3" Color="Color.Error">@_faulted</MudText>
+    </MudPaper>
+  </MudItem>
+</MudGrid>
+
+@code {
+  private int _total;
+  private int _enabled;
+  private int _faulted;
+
+  protected override void OnInitialized()
+  {
+    var plugins = PluginHost.List();
+    _total = plugins.Count;
+    _enabled = plugins.Count(p => p.State == PluginState.Enabled);
+    _faulted = plugins.Count(p => p.State == PluginState.Faulted);
+  }
+}

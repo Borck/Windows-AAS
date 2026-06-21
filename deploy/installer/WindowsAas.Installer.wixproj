@@ -1,0 +1,15 @@
+<Project Sdk="WixToolset.Sdk/5.0.2">
+
+  <PropertyGroup>
+    <OutputName>WindowsAAS</OutputName>
+    <OutputType>Package</OutputType>
+    <!-- Path to the published service output; set by build-msi.ps1. -->
+    <PublishDir Condition="'$(PublishDir)' == ''">..\..\src\WindowsAas.Service\bin\Release\net10.0\win-x64\publish</PublishDir>
+    <DefineConstants>PublishDir=$(PublishDir)</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.UI.wixext" Version="5.0.2" />
+  </ItemGroup>
+
+</Project>

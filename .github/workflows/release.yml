@@ -1,0 +1,57 @@
+name: Release
+
+# Tag a release (e.g. v0.1.0) to build + sign the MSI, publish it, and submit the
+# updated manifest to the winget community repository.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Install WiX
+        run: dotnet tool install --global wix
+
+      - name: Resolve version
+        id: ver
+        shell: pwsh
+        run: "echo \"version=$($env:GITHUB_REF_NAME.TrimStart('v'))\" >> $env:GITHUB_OUTPUT"
+
+      - name: Build MSI
+        shell: pwsh
+        run: ./deploy/installer/build-msi.ps1 -Version ${{ steps.ver.outputs.version }}
+
+      # Optional: sign the MSI when a code-signing certificate is configured.
+      # - name: Sign MSI
+      #   shell: pwsh
+      #   run: signtool sign /sha1 ${{ secrets.CODESIGN_THUMBPRINT }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 (Get-ChildItem -Recurse -Filter WindowsAAS.msi)[0].FullName
+
+      - name: Locate MSI
+        id: msi
+        shell: pwsh
+        run: "echo \"path=$((Get-ChildItem -Path deploy/installer -Recurse -Filter WindowsAAS.msi)[0].FullName)\" >> $env:GITHUB_OUTPUT"
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.msi.outputs.path }}
+
+      - name: Submit to winget
+        shell: pwsh
+        run: |
+          $url = "https://github.com/Borck/Windows-AAS/releases/download/${{ github.ref_name }}/WindowsAAS-${{ steps.ver.outputs.version }}.msi"
+          dotnet tool install --global wingetcreate
+          wingetcreate update Borck.WindowsAas `
+            --version ${{ steps.ver.outputs.version }} `
+            --urls $url `
+            --submit --token ${{ secrets.WINGET_TOKEN }}

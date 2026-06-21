@@ -1,0 +1,3 @@
+EnumDisplayDevices
+EnumDisplaySettings
+ChangeDisplaySettingsEx

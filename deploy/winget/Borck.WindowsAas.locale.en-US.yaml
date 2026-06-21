@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.defaultLocale.1.6.0.schema.json
+PackageIdentifier: Borck.WindowsAas
+PackageVersion: 0.1.0
+PackageLocale: en-US
+Publisher: Christian Borck
+PublisherUrl: https://github.com/Borck
+PackageName: Windows-AAS
+PackageUrl: https://github.com/Borck/Windows-AAS
+License: MIT
+LicenseUrl: https://github.com/Borck/Windows-AAS/blob/main/LICENSE
+ShortDescription: Plugin-based Asset Administration Shell (AAS) for Windows hosts.
+Description: >-
+  Windows-AAS is a system-level Windows service that reads and writes host
+  properties (displays, audio, automation) and bridges them over MQTT to an
+  Asset Administration Shell hosted in a BaSyx aas-environment. It includes a
+  loopback-only Blazor admin UI, a signature-verified plugin repository, and a
+  built-in auto-updater.
+Tags:
+  - aas
+  - asset-administration-shell
+  - basyx
+  - iot
+  - industry-4.0
+  - mqtt
+ManifestType: defaultLocale
+ManifestVersion: 1.6.0
