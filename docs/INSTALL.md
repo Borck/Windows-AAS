@@ -25,10 +25,22 @@ This starts:
 | `aas-registry` | 8082 | AAS discovery |
 | `submodel-registry` | 8083 | Submodel discovery |
 | `mqtt` (Mosquitto) | 1883 / 8883 | Bridge transport (plain dev / TLS prod) |
+| `repository-server` | 8084 | Signed plugin repository (`WindowsAas.Repository.Server`) |
 
 > **Production:** enable the TLS listener in `deploy/mosquitto/mosquitto.conf`,
 > provide certificates under `deploy/mosquitto/certs`, require credentials, and
 > point the service's `Mqtt:UseTls=true` (default) at port 8883.
+
+`repository-server` builds from [`src/WindowsAas.Repository.Server/Dockerfile`](../src/WindowsAas.Repository.Server/Dockerfile)
+and serves the `{base}.zip` / `{base}.zip.sig` / `{base}.json` package trios from a
+named volume (`repository-packages`, mounted at `/app/packages`). Copy package trios
+into that volume, then point the core service's `Repository:BaseUrl` at
+`http://<host>:8084`. To run it standalone instead of via compose:
+
+```bash
+docker build -f src/WindowsAas.Repository.Server/Dockerfile -t windowsaas-repository-server .
+docker run -d -p 8084:8080 -v repository-packages:/app/packages windowsaas-repository-server
+```
 
 ## 2. Install the Windows service
 

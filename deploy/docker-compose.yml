@@ -3,7 +3,8 @@
 # The Windows core service does NOT host the AAS; it connects to these containers.
 # The aas-environment hosts the AAS + submodels and emits MQTT value-change events;
 # the registries make the shell discoverable; Mosquitto is the MQTT broker the host
-# <-> AAS bridge uses. See docs/INSTALL.md for production hardening (TLS, auth).
+# <-> AAS bridge uses. repository-server hosts the signed plugin packages the core
+# service installs from. See docs/INSTALL.md for production hardening (TLS, auth).
 services:
   aas-environment:
     image: eclipsebasyx/aas-environment:2.0.0-milestone-05
@@ -40,3 +41,17 @@ services:
       - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
       - ./mosquitto/certs:/mosquitto/certs:ro
     restart: unless-stopped
+
+  repository-server:
+    build:
+      context: ..
+      dockerfile: src/WindowsAas.Repository.Server/Dockerfile
+    container_name: waas-repository-server
+    ports:
+      - "8084:8080"
+    volumes:
+      - repository-packages:/app/packages
+    restart: unless-stopped
+
+volumes:
+  repository-packages:
