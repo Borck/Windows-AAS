@@ -20,6 +20,8 @@
     <ProjectReference Include="..\..\src\WindowsAas.Mqtt\WindowsAas.Mqtt.csproj" />
     <ProjectReference Include="..\..\src\WindowsAas.Security\WindowsAas.Security.csproj" />
     <ProjectReference Include="..\..\src\Plugins\WindowsAas.Plugins.Automation\WindowsAas.Plugins.Automation.csproj" />
+    <ProjectReference Include="..\..\src\WindowsAas.Updater\WindowsAas.Updater.csproj" />
+    <ProjectReference Include="..\..\src\WindowsAas.Repository.Client\WindowsAas.Repository.Client.csproj" />
   </ItemGroup>
 
 </Project>
